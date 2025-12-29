@@ -1,8 +1,8 @@
 ;====================================================================
 ; PROJE: Ev Otomasyonu - Board #2
-; GÖREV: 2.1.1 2.2.4 Step Motor ve Potansiyometre Kontrolü
-; YAZAR: Abdullah Esad Özçelik
-; TARIH: 2025 Sonbahar Dönemi
+; GÃ–REV: 2.1.1 2.2.4 Step Motor ve Potansiyometre KontrolÃ¼
+; YAZAR: Abdullah Esad Ã–zÃ§elik
+; TARIH: 2025 Sonbahar DÃ¶nemi
 ;====================================================================
 
     LIST P=16F877A
@@ -20,7 +20,7 @@
         LDR_FLAG            ; 1=Karanlik, 0=Aydinlik
         
         ; --- BENIM DEGISKENLERIM ---
-        LDR_VAL             ; (Simülasyon için geçici)
+        LDR_VAL             ; (SimÃ¼lasyon iÃ§in geÃ§ici)
         POT_VAL             
         TAR_POS_L           
         TAR_POS_H           
@@ -64,38 +64,38 @@ START:
     CLRF IS_RETURNING
 
 ;====================================================================
-; ANA DÖNGÜ
+; ANA DÃ–NGÃœ
 ;====================================================================
 MAIN_LOOP:
 
     ; ---------------------------------------------------------------
-    ; [AKTIF] SIMÜLASYON MODU (Su an çalisan kisim)
-    ; Birlesme zamani bu blok devreden çikacak.
+    ; [AKTIF] SIMÃœLASYON MODU (Su an Ã§alisan kisim)
+    ; Birlesme zamani bu blok devreden Ã§ikacak.
     ; ---------------------------------------------------------------
     CALL SIMULATION_READ_LDR 
     MOVF LDR_VAL, W
     SUBLW LDR_THRESHOLD
     BTFSC STATUS, C         ; Aydinlik mi?
-    GOTO MOD_GUNDUZ         ; Evetse Gündüz
+    GOTO MOD_GUNDUZ         ; Evetse GÃ¼ndÃ¼z
     ; Hayirsa asagi devam et (Gece)...
 
 
     ; ---------------------------------------------------------------
-    ; [PASIF] ENTEGRASYON MODU (Birlesme günü burasi devreye sokulacak)
+    ; [PASIF] ENTEGRASYON MODU (Birlesme gÃ¼nÃ¼ burasi devreye sokulacak)
     ; LDR_FLAG adresine ne yazdigina bak.
     ; ---------------------------------------------------------------
     ;
     ; MOVF LDR_FLAG, W      ; Arkadaimmin bayragini W'ye al
-    ; BTFSC STATUS, Z       ; Eger 0 ise (Z=1 olur) -> GÜNDÜZ
-    ; GOTO MOD_GUNDUZ       ; Gündüz moduna git
+    ; BTFSC STATUS, Z       ; Eger 0 ise (Z=1 olur) -> GÃœNDÃœZ
+    ; GOTO MOD_GUNDUZ       ; GÃ¼ndÃ¼z moduna git
     ;
-    ; ; Eger 0 degilse (yani 1 ise), buraya düser -> GECE
+    ; ; Eger 0 degilse (yani 1 ise), buraya dÃ¼ser -> GECE
     ; ---------------------------------------------------------------
 
 
-    ; --- GECE MODU (LDR_FLAG = 1 ?SE BURASI ÇALISIR) ---
+    ; --- GECE MODU (LDR_FLAG = 1 ?SE BURASI Ã‡ALISIR) ---
     MOVLW D'1'
-    MOVWF IS_RETURNING      ; Otomatik dönüs bayragini kaldir
+    MOVWF IS_RETURNING      ; Otomatik dÃ¶nÃ¼s bayragini kaldir
     
     MOVLW D'50'
     MOVWF SPEED_VAL         ; Hiz: Yavas (Sinematik)
@@ -107,7 +107,7 @@ MAIN_LOOP:
     GOTO MOTOR_HAREKET
 
 MOD_GUNDUZ:
-    ; --- GÜNDÜZ MODU (LDR_FLAG = 0 ISE BURASI ÇALISIR) ---
+    ; --- GÃœNDÃœZ MODU (LDR_FLAG = 0 ISE BURASI Ã‡ALISIR) ---
     
     MOVLW D'2'              ; Hiz: Hizli
     MOVWF SPEED_VAL
@@ -128,7 +128,7 @@ MOD_GUNDUZ:
     RLF TAR_POS_L, F        ; x8
     RLF TAR_POS_H, F
 
-    ; Tiraslama: (POT / 6) ç?kar (3.00V Kalibrasyonu)
+    ; Tiraslama: (POT / 6) Ã§?kar (3.00V Kalibrasyonu)
     ; POT/8
     MOVF POT_VAL, W
     MOVWF DELAY_VAR1
@@ -151,14 +151,14 @@ MOD_GUNDUZ:
     RRF DELAY_VAR2, F       ; /16
     BCF STATUS, C
     RRF DELAY_VAR2, F       ; /32
-    ; Topla ve Ç?kar
+    ; Topla ve Ã‡?kar
     MOVF DELAY_VAR2, W
     ADDWF DELAY_VAR1, W
     SUBWF TAR_POS_L, F      
     BTFSS STATUS, C         
     DECF TAR_POS_H, F
 
-    ; Vardik mi kontrolü
+    ; Vardik mi kontrolÃ¼
     MOVF CUR_POS_L, W
     SUBWF TAR_POS_L, W
     BTFSS STATUS, Z
