@@ -1,8 +1,8 @@
 ;====================================================================
 ; PROJE: Ev Otomasyonu - Board #1
-; GÖREV: 2.1.1 Termostat ve Fan Kontrolü
-; YAZAR: Abdullah Esad Özçelik
-; TARIH: 2025 Sonbahar Dönemi
+; GÃ–REV: 2.1.1 Termostat ve Fan KontrolÃ¼
+; YAZAR: Abdullah Esad Ã–zÃ§elik
+; TARIH: 2025 Sonbahar DÃ¶nemi
 ;====================================================================
 
     LIST P=16F877A
@@ -29,7 +29,7 @@
 
         FAN_SPEED           
         
-        ; --- GEÇICI SAYAÇLAR ---
+        ; --- GEÃ‡ICI SAYAÃ‡LAR ---
         COUNT1
         COUNT2
         TEMP_MATH_L
@@ -48,12 +48,12 @@ START:
     BCF STATUS, RP1
     
     MOVLW 0x07
-    MOVWF CMCON             ; Komparatörleri kapa
+    MOVWF CMCON             ; KomparatÃ¶rleri kapa
     
     MOVLW B'10001110'       ; RA0 Analog
     MOVWF ADCON1
     
-    MOVLW B'00000000'       ; PORTD Çikis
+    MOVLW B'00000000'       ; PORTD Ã‡ikis
     MOVWF TRISD
     
     MOVLW B'00010001'       ; RA0, RA4 Giris
@@ -65,7 +65,7 @@ START:
     ; --- BANK 0 ---
     BCF STATUS, RP0
     
-    MOVLW B'10000001'       ; ADC Açik
+    MOVLW B'10000001'       ; ADC AÃ§ik
     MOVWF ADCON0
 
     ;================================================================
@@ -79,12 +79,12 @@ START:
     ;================================================================
 
 ;====================================================================
-; ANA DÖNGÜ
+; ANA DÃ–NGÃœ
 ;====================================================================
 MAIN_LOOP:
     CALL CALC_TARGET_TENTHS   ; Hedefi hazirla
-    CALL READ_SENSOR_PRECISE  ; Sensörü oku
-    CALL MEASURE_FAN_SPEED    ; Fani ölç
+    CALL READ_SENSOR_PRECISE  ; SensÃ¶rÃ¼ oku
+    CALL MEASURE_FAN_SPEED    ; Fani Ã¶lÃ§
 
     ; --- KARSILASTIRMA (16 Bit) ---
     ; Hedef - Ortam islemi
@@ -93,23 +93,23 @@ MAIN_LOOP:
     MOVWF TEMP_MATH_L       
     
     MOVF CURRENT_VAL_H, W
-    BTFSS STATUS, C         ; Borç var mi?
-    ADDLW 1                 ; Varsa düs?
+    BTFSS STATUS, C         ; BorÃ§ var mi?
+    ADDLW 1                 ; Varsa dÃ¼s?
     SUBWF TARGET_VAL_H, W
 
-    ; SONUÇ: C=1 (Isit), C=0 (Sogut)
+    ; SONUÃ‡: C=1 (Isit), C=0 (Sogut)
     BTFSS STATUS, C
     GOTO SOGUTMA_MODU
     GOTO ISITMA_MODU
 
 ISITMA_MODU:
-    BSF PORTD, 0            ; Isitici AÇ
+    BSF PORTD, 0            ; Isitici AÃ‡
     BCF PORTD, 1            ; Fan KAPAT
     GOTO DONGU_SONU
 
 SOGUTMA_MODU:
     BCF PORTD, 0            ; Isitici KAPAT
-    BSF PORTD, 1            ; Fan AÇ
+    BSF PORTD, 1            ; Fan AÃ‡
     GOTO DONGU_SONU
 
 DONGU_SONU:
@@ -155,7 +155,7 @@ CALC_TARGET_TENTHS:
     BTFSC STATUS, C
     INCF TEMP_MATH_H, F
 
-    ; Sonuç
+    ; SonuÃ§
     MOVF TEMP_MATH_L, W
     MOVWF TARGET_VAL_L
     MOVF TEMP_MATH_H, W
@@ -163,7 +163,7 @@ CALC_TARGET_TENTHS:
     RETURN
 
 ;====================================================================
-; SUBROUTINE : SENSÖR OKU (ADC*5)
+; SUBROUTINE : SENSÃ–R OKU (ADC*5)
 ;====================================================================
 READ_SENSOR_PRECISE:
     MOVLW D'50'
